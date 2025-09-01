@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приглашение на свадьбу Левона и Алисы</title>
+    <meta name="description" content="Приглашение на свадьбу Левона и Алисы 26 октября 2025 года">
+    <meta name="author" content="Левон и Алиса">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(to right, #f9f0f0, #f5e1e1);
+            color: #5c4b37;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Анимация сердечек */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            opacity: 0.7;
+        }
+        
+        .heart:before, .heart:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff9bb9;
+            border-radius: 50%;
+        }
+        
+        .heart:before {
+            top: -50%;
+            left: 0;
+        }
+        
+        .heart:after {
+            top: 0;
+            left: 50%;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .admin-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .admin-btn {
+            background: #b76e79;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .admin-btn:hover {
+            background: #9c5861;
+            transform: translateY(-2px);
+        }
+        
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .admin-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .admin-content h3 {
+            color: #b76e79;
+            margin-bottom: 20px;
+        }
+        
+        .admin-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #e8c7c7;
+            border-radius: 8px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+        }
+        
+        .guest-list-admin {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .guest-item-admin {
+            padding: 10px;
+            border-bottom: 1px solid #e8c7c7;
+        }
+        
+        .photo-section {
+            text-align: center;
+            margin: 20px 0 30px;
+            position: relative;
+        }
+        
+        .photo-frame {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            background: #faf0f0;
+            border: 8px solid #d89d9d;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        
+        .photo-frame:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            border-radius: 50%;
+        }
+        
+        .placeholder-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #d89d9d;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+            flex-direction: column;
+            gap: 15px;
+            border-radius: 50%;
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            color: #d89d9d;
+        }
+        
+        header {
+            text-align: center;
+            padding: 10px 0 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            color: #b76e79;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 2s ease;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin: 20px 0;
+            color: #b76e79;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #b76e79;
+        }
+        
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #d89d9d, transparent);
+            width: 60%;
+            margin: 25px auto;
+        }
+        
+        .invitation-text {
+            text-align: center;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 20px;
+            background: rgba(255, 240, 240, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .countdown {
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(183, 110, 121, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .timer-unit {
+            background: #faf0f0;
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 90px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timer-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #b76e79;
+        }
+        
+        .timer-label {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .locations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .location-card {
+            flex: 1;
+            min-width: 300px;
+            padding: 25px;
+            background: rgba(255, 240, 240, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .location-icon {
+            font-size: 2.2rem;
+            color: #b76e79;
+            margin-bottom: 15px;
+        }
+        
+        .location-time {
+            font-weight: bold;
+            color: #b76e79;
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+        
+        .guest-section {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 25px;
+            background: rgba(255, 240, 240, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #b76e79;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e8c7c7;
+            border-radius: 8px;
+            background: #fdf7f7;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: #5c4b37;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #d89d9d;
+            box-shadow: 0 0 0 2px rgba(216, 157, 157, 0.3);
+        }
+        
+        button {
+            background: #b76e79;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #9c5861;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .confirmation-message {
+            margin-top: 20px;
+            padding: 15px;
+            background: #faf0f0;
+            border-radius: 8px;
+            border-left: 4px solid #d89d9d;
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 40px;
+            font-size: 1.1rem;
+            color: #b76e79;
+            border-top: 1px solid #e8c7c7;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .timer {
+                flex-wrap: wrap;
+            }
+            
+            .locations {
+                flex-direction: column;
+            }
+            
+            .admin-panel {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .photo-frame {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Анимированные сердечки на фоне -->
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container">
+        <!-- Панель администратора -->
+        <div class="admin-panel">
+            <button class="admin-btn" id="adminBtn">
+                <i class="fas fa-lock"></i> Админ
+            </button>
+        </div>
+        
+        <!-- Модальное окно администратора -->
+        <div class="admin-modal" id="adminModal">
+            <div class="admin-content">
+                <h3>Панель администратора</h3>
+                <input type="password" id="adminPassword" placeholder="Введите пароль">
+                <button id="adminLogin">Войти</button>
+                
+                <div id="adminPanel" style="display: none;">
+                    <h3>Список гостей</h3>
+                    <div class="guest-list-admin" id="guestListAdmin">
+                        <!-- Список гостей будет здесь -->
+                    </div>
+                    <button id="exportGuests">Экспорт списка</button>
+                    <button id="clearGuests">Очистить список</button>
+                    <button id="adminLogout">Выйти</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Круглая рамка для фото (ближе к верху) -->
+        <section class="photo-section">
+            <div class="photo-frame" id="photoFrame">
+                <div class="placeholder-text">
+                    <i class="fas fa-camera upload-icon"></i>
+                    Нажмите, чтобы загрузить фото
+                </div>
+                <img id="uploadedPhoto" src="" alt="Фото Левона и Алисы">
+            </div>
+            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+        </section>
+        
+        <header>
+            <h1>Левон & Алиса</h1>
+            <p class="subtitle">Приглашаем вас на нашу свадьбу</p>
+            <div class="divider"></div>
+        </header>
+        
+        <section class="invitation-text">
+            <p>Дорогие друзья и родные!</p>
+            <p>Мы с огромной радостью хотим разделить с вами самый важный день в нашей жизни.</p>
+            <p>Ждем вас <strong>26 октября 2025 года</strong> на торжественную церемонию и праздничный ужин.</p>
+        </section>
+        
+        <section class="countdown">
+            <h2>До свадьбы осталось:</h2>
+            <div class="timer">
+                <div class="timer-unit">
+                    <div class="timer-number" id="days">0</div>
+                    <div class="timer-label">дней</div>
+                </div>
+                <div class="timer-unit">
+                    <div class="timer-number" id="hours">0</div>
+                    <div class="timer-label">часов</div>
+                </div>
+                <div class="timer-unit">
+                    <div class="timer-number" id="minutes">0</div>
+                    <div class="timer-label">минут</div>
+                </div>
+                <div class="timer-unit">
+                    <div class="timer-number" id="seconds">0</div>
+                    <div class="timer-label">секунд</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="locations">
+            <div class="location-card">
+                <div class="location-icon">
+                    <i class="fas fa-church"></i>
+                </div>
+                <h3>Церковная церемония</h3>
+                <p class="location-time">14:00</p>
+                <p>Храм Святого Григория Просветителя</p>
+                <p>ул. Армянская, 25</p>
+            </div>
+            
+            <div class="location-card">
+                <div class="location-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3>Праздничный ужин</h3>
+                <p class="location-time">17:00</p>
+                <p>Ресторан "Белая сирень"</p>
+                <p>ул. Цветочная, 18</p>
+            </div>
+        </section>
+        
+        <section class="guest-section">
+            <h2>Подтвердите участие</h2>
+            <p>Пожалуйста, введите ваши ФИО для подтверждения присутствия</p>
+            
+            <div class="form-group">
+                <label for="guestName">Ваши ФИО:</label>
+                <input type="text" id="guestName" placeholder="Введите ваше полное имя">
+            </div>
+            
+            <button id="addGuest">
+                <i class="fas fa-check-circle"></i> Подтвердить участие
+            </button>
+            
+            <div class="confirmation-message" id="confirmationMessage">
+                Спасибо! Ваше участие подтверждено.
+            </div>
+        </section>
+        
+        <footer>
+            <p>С любовью, Левон и Алиса</p>
+            <p>26 октября 2025 года</p>
+        </footer>
+    </div>
+
+    <script>
+        // Пароль для доступа к админ-панели (можно сменить)
+        const ADMIN_PASSWORD = "svadba2025";
+        
+        // Создание анимированных сердечек
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            const heartCount = 25;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                
+                // Случайная позиция и анимация
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animation = `float ${6 + Math.random() * 10}s linear infinite`;
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                
+                // Случайный размер
+                const size = 10 + Math.random() * 20;
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+                
+                // Случайный цвет
+                const colors = ['#ff9bb9', '#ffb6c1', '#ffc0cb', '#f8c8dc', '#fadadd'];
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // Обратный отсчет до свадьбы
+        function updateCountdown() {
+            const weddingDate = new Date('October 26, 2025 15:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            
+            if (distance < 0) {
+                document.getElementById('days').innerText = '0';
+                document.getElementById('hours').innerText = '0';
+                document.getElementById('minutes').innerText = '0';
+                document.getElementById('seconds').innerText = '0';
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        
+        // Управление списком гостей
+        let guests = [];
+        const guestNameInput = document.getElementById('guestName');
+        const addGuestButton = document.getElementById('addGuest');
+        const confirmationMessage = document.getElementById('confirmationMessage');
+        
+        // Автоматическое сохранение в localStorage
+        function saveData() {
+            localStorage.setItem('weddingGuests', JSON.stringify(guests));
+        }
+        
+        // Загрузка гостей из localStorage
+        function loadGuests() {
+            const savedGuests = localStorage.getItem('weddingGuests');
+            if (savedGuests) {
+                guests = JSON.parse(savedGuests);
+            }
+        }
+        
+        // Добавление гостя
+        function addGuest() {
+            const name = guestNameInput.value.trim();
+            if (name) {
+                // Проверяем, нет ли уже такого гостя
+                if (!guests.includes(name)) {
+                    guests.push(name);
+                    guestNameInput.value = '';
+                    
+                    // Показываем подтверждение
+                    confirmationMessage.style.display = 'block';
+                    setTimeout(() => {
+                        confirmationMessage.style.display = 'none';
+                    }, 3000);
+                    
+                    saveData(); // Автосохранение
+                } else {
+                    alert('Вы уже подтвердили свое участие ранее');
+                }
+            } else {
+                alert('Пожалуйста, введите ваше ФИО');
+            }
+        }
+        
+        // Админ-панель
+        const adminBtn = document.getElementById('adminBtn');
+        const adminModal = document.getElementById('adminModal');
+        const adminPassword = document.getElementById('adminPassword');
+        const adminLogin = document.getElementById('adminLogin');
+        const adminPanel = document.getElementById('adminPanel');
+        const guestListAdmin = document.getElementById('guestListAdmin');
+        const exportGuests = document.getElementById('exportGuests');
+        const clearGuests = document.getElementById('clearGuests');
+        const adminLogout = document.getElementById('adminLogout');
+        
+        // Открыть модальное окно админа
+        adminBtn.addEventListener('click', () => {
+            adminModal.style.display = 'flex';
+        });
+        
+        // Закрыть модальное окно при клике вне его
+        adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) {
+                adminModal.style.display = 'none';
+            }
+        });
+        
+        // Вход в админ-панель
+        adminLogin.addEventListener('click', () => {
+            if (adminPassword.value === ADMIN_PASSWORD) {
+                adminPanel.style.display = 'block';
+                adminPassword.value = '';
+                loadGuestList();
+            } else {
+                alert('Неверный пароль');
+            }
+        });
+        
+        // Загрузка списка гостей в админ-панель
+        function loadGuestList() {
+            guestListAdmin.innerHTML = '';
+            
+            if (guests.length === 0) {
+                guestListAdmin.innerHTML = '<div class="guest-item-admin">Гостей пока нет</div>';
+                return;
+            }
+            
+            guests.forEach((guest, index) => {
+                const guestElement = document.createElement('div');
+                guestElement.className = 'guest-item-admin';
+                guestElement.textContent = `${index + 1}. ${guest}`;
+                guestListAdmin.appendChild(guestElement);
+            });
+        }
+        
+        // Экспорт списка гостей
+        exportGuests.addEventListener('click', () => {
+            const guestText = guests.join('\n');
+            const blob = new Blob([guestText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'список_гостей_свадьбы.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+        
+        // Очистка списка гостей
+        clearGuests.addEventListener('click', () => {
+            if (confirm('Вы уверены, что хотите очистить весь список гостей?')) {
+                guests = [];
+                saveData();
+                loadGuestList();
+            }
+        });
+        
+        // Выход из админ-панели
+        adminLogout.addEventListener('click', () => {
+            adminPanel.style.display = 'none';
+            adminModal.style.display = 'none';
+        });
+        
+        // Загрузка фото
+        const photoFrame = document.getElementById('photoFrame');
+        const photoInput = document.getElementById('photoInput');
+        const uploadedPhoto = document.getElementById('uploadedPhoto');
+        const placeholderText = document.querySelector('.placeholder-text');
+        
+        photoFrame.addEventListener('click', () => {
+            photoInput.click();
+        });
+        
+        photoInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedPhoto.src = e.target.result;
+                    uploadedPhoto.style.display = 'block';
+                    placeholderText.style.display = 'none';
+                    
+                    // Сохраняем фото в localStorage
+                    localStorage.setItem('weddingPhoto', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Загрузка сохраненных данных при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            createHearts(); // Создаем сердечки
+            loadGuests();
+            
+            // Загрузка сохраненного фото
+            const savedPhoto = localStorage.getItem('weddingPhoto');
+            if (savedPhoto) {
+                uploadedPhoto.src = savedPhoto;
+                uploadedPhoto.style.display = 'block';
+                placeholderText.style.display = 'none';
+            }
+            
+            // Обработчик для добавления гостя по нажатию Enter
+            guestNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addGuest();
+                }
+            });
+            
+            // Обработчик для кнопки добавления гостя
+            addGuestButton.addEventListener('click', addGuest);
+        });
+    </script>
+</body>
+</html>
